@@ -1,15 +1,25 @@
 createSphereZoneTarget = function(coords, radius, options, distance, name)
-    return exports[Config.target]:AddBoxZone(name, coords, radius, radius, 
-    { 
-        debugPoly = Config.debug, 
-        name = name, 
-        minZ = coords.z-radius, 
-        maxZ = coords.z+radius,
-        heading = coords.w,
-    }, { 
-        options = options, 
-        distance = distance 
-    })
+    if Config.target == 'qb-target' then    
+        return exports['qb-target']:AddBoxZone(name, coords, radius, radius, 
+        { 
+            debugPoly = Config.debug, 
+            name = name, 
+            minZ = coords.z-radius, 
+            maxZ = coords.z+radius,
+            heading = coords.w,
+        }, { 
+            options = options, 
+            distance = distance 
+        })
+    elseif Config.target == 'ox_target' then
+        return exports['ox_target']:addBoxZone({
+            coords = coords,
+            size = vec3(radius, radius*2, radius*2),
+            name = name,
+            debug = Config.debug,
+            options = options,
+        })
+    end
 end
 
 local currentfloor = nil
