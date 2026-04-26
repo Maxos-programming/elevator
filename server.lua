@@ -23,19 +23,19 @@ RegisterNetEvent('dv_elevator:server:leaveElevator', function (elevator)
     end
 end)
 
-RegisterNetEvent('dv_elevator:server:useElevator', function (data, floor)
-    local currentfloor = tostring(floor)
+RegisterNetEvent('dv_elevator:server:useElevator', function (data, currentFloor)
+    currentFloor = tostring(currentFloor)
     if not data or not data.currentElevator or not elevatorList[data.currentElevator] then
-        TriggerClientEvent('dv_elevator:client:notify', source, 'Elevator Fehler', 'error')
-        print('Data or Elevator not found', json.encode(data), json.encode(elevatorList[data.currentElevator]))
+        TriggerClientEvent('dv_elevator:client:notify', source, 'Elevator not found', 'error')
+        print('Elevator not found', json.encode(data), json.encode(elevatorList[data.currentElevator]),json.encode(elevatorList))
         return
     end
-    if not elevatorList[data.currentElevator][currentfloor] then
-        TriggerClientEvent('dv_elevator:client:notify', source, 'Stockwerk Fehler', 'error')
-        print('Floor not found', currentfloor, json.encode(elevatorList[data.currentElevator]))
+    if not elevatorList[data.currentElevator][currentFloor] then
+        TriggerClientEvent('dv_elevator:client:notify', source, 'Floor not found', 'error')
+        print('Floor not found', json.encode(data), currentFloor ,json.encode(elevatorList))
         return
     end
-    for _, v in pairs(elevatorList[data.currentElevator][currentfloor]) do
+    for _, v in pairs(elevatorList[data.currentElevator][currentFloor]) do
         TriggerClientEvent('dv_elevator:client:useElevator', v, data)
     end
 end)

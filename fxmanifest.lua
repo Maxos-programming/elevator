@@ -1,5 +1,6 @@
 fx_version 'cerulean'
 author 'Maxos'
+version '1.1.0'
 description 'Most incredible FiveM elevator script'
 lua54 'yes'
 game 'gta5'
