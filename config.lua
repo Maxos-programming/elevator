@@ -29,7 +29,15 @@ end
 Config.UseOffDutyJobs = false  -- Set to true if you want to allow off-duty jobs (as example off_police) access to elevators
 Config.OffDutyJobSuffix = "off_"  -- Suffix to identify off-duty jobs
 
-Config.target = "qb-target"
+Config.target = function()
+    if GetResourceState('qb-target') == 'started' then
+        return 'qb-target'
+    elseif GetResourceState('ox_target') == 'started' then
+        return 'ox_target'
+    else
+        error('[elevator] No supported target framework detected (qb-target, ox_target). Please install one of them for elevator interaction.')
+    end
+end
 
 Config.ElevatorTime = 3000
 Config.elevators = {

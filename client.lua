@@ -108,7 +108,7 @@ RegisterNetEvent('dv_elevator:client:useElevator', function (data)
     if not Config.debug then 
         Wait(Config.ElevatorTime * diff)
     end
-    --TriggerServerEvent("InteractSound_SV:PlayOnSource", "dv_elevator", 0.5)
+    TriggerServerEvent("InteractSound_SV:PlayOnSource", "dv_elevator", 0.5)
     local offsetX, offsetY = playerCoords.x - coords.x, playerCoords.y - coords.y
     SetEntityCoords(PlayerPedId(), newCoords.x + offsetX, newCoords.y + offsetY, newCoords.z, true, false, false, false)
     --SetEntityHeading(PlayerPedId(), coords.w) -- Not Turning
@@ -122,8 +122,8 @@ end)
 
 CreateThread(function()
     for k, v in pairs(Config.elevators) do
-        for _, v2 in pairs(v.levels) do
-            createSphereZoneTarget(v2.target.coords, v2.target.radius, {
+        for a, b in pairs(v.levels) do
+            createSphereZoneTarget(b.target.coords, b.target.radius, {
                 {
                     label = "Use elevator",
                     icon = 'fas fa-angle-up',
@@ -137,15 +137,15 @@ CreateThread(function()
                                 currentElevator = k,
                                 elevatorLabel = v.label,
                                 elevatorLevels = v.levels,
-                                currentLevel = v2.id
+                                currentLevel = a
                             }
                         })
                         SendNUIMessage({ action = 'setVisibleElevator', data = true })
                         SetNuiFocus(true, true)
                     end
                 }
-            }, 2.5, 'elevator_'..k..v2.id)
-            createBoxZoneElevators(k, v2.id, v2.center, v2.size)
+            }, 2.5, 'elevator_'..k..a)
+            createBoxZoneElevators(k, a, b.center, b.size)
         end
     end
 end)
