@@ -18,9 +18,13 @@ export async function fetchNui<T = unknown>(
   const resourceName = (window as any).GetParentResourceName
     ? (window as any).GetParentResourceName() : "nui-frame-app"
 
-  const resp = await fetch(`https://${resourceName}/${eventName}`, options)
+  const resp = await fetch(`https://${resourceName}/${eventName}`, options).catch(() => {
+    throw new Error(`[fetchNui] Failed to reach NUI endpoint: ${eventName}`)
+  })
 
-  const respFormatted = await resp.json()
+  if (!resp.ok) {
+    throw new Error(`[fetchNui] Bad response for ${eventName}: ${resp.status}`)
+  }
 
-  return respFormatted
+  return resp.json()
 }

@@ -23,7 +23,7 @@ export const VisibilityProvider: React.FC<{
   useEffect(() => {
     const keyHandler = (e: KeyboardEvent) => {
       if (visible && e.code === "Escape") {
-        if (!isEnvBrowser()) fetchNui("hideFrame", { name: `setVisible${componentName}` });
+        if (!isEnvBrowser()) fetchNui("hideFrame", { name: `setVisible${componentName}` }).catch(console.error);
         else setVisible(false);
       }
     };

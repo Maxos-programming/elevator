@@ -67,7 +67,7 @@ const Elevator: React.FC = () => {
                         color="blue"
                         disabled={(currentLevel == id)}
                         onClick={() => {
-                            fetchNui('useElevator', { currentElevator: currentElevator, id: id })
+                            fetchNui('useElevator', { currentElevator: currentElevator, id: id }).catch(console.error)
                         }}
                     >
                         <Text size={60}>{label}</Text>
