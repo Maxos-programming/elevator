@@ -2,42 +2,10 @@ Config = {}
 Config.debug = false;
 
 Config.Core = "auto" -- auto, qb-core, esx, ox_core
-
-Config.CoreObject = function()
-    if Config.Core == "qb-core" then
-        return exports['qb-core']:GetCoreObject()
-    elseif Config.Core == "esx" then
-        return exports['es_extended']:getSharedObject()
-    elseif Config.Core == "ox_core" then
-        return exports.ox_core:object()
-    else -- auto-detect
-        if GetResourceState('qb-core') == 'started' then
-            Config.Core = "qb-core"
-            return exports['qb-core']:GetCoreObject()
-        elseif GetResourceState('es_extended') == 'started' then
-            Config.Core = "esx"
-            return exports['es_extended']:getSharedObject()
-        elseif GetResourceState('ox_core') == 'started' then
-            Config.Core = "ox_core"
-            return exports.ox_core:object()
-        else
-            error('[dv-elevator] No supported core framework detected (qb-core, esx, ox_core). Please set Config.Core manually.')
-        end
-    end
-end
+Config.target = "auto" -- auto, qb-target, ox_target
 
 Config.UseOffDutyJobs = false  -- Set to true if you want to allow off-duty jobs (as example off_police) access to elevators
 Config.OffDutyJobSuffix = "off_"  -- Suffix to identify off-duty jobs
-
-Config.target = function()
-    if GetResourceState('qb-target') == 'started' then
-        return 'qb-target'
-    elseif GetResourceState('ox_target') == 'started' then
-        return 'ox_target'
-    else
-        error('[elevator] No supported target framework detected (qb-target, ox_target). Please install one of them for elevator interaction.')
-    end
-end
 
 Config.ElevatorTime = 3000
 Config.elevators = {
@@ -121,7 +89,7 @@ Config.elevators = {
 }
 
 Config.CL = {}
-Config.CL.Notify = function(type, message)
+Config.CL.Notify = function(message, type)
     if Config.Core == "ox_core" then
         exports.ox_lib:notify({
             type = type,

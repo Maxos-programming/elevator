@@ -1,3 +1,34 @@
+if Config.target == "auto" then
+    if GetResourceState('qb-target') == 'started' then
+        Config.target = 'qb-target'
+    elseif GetResourceState('ox_target') == 'started' then
+        Config.target = 'ox_target'
+    else
+        Config.target = nil
+        error('[dv-elevator] No supported target framework detected (qb-target, ox_target). Please set Config.target manually.')
+    end
+end
+
+if Config.Core == "auto" then
+    if GetResourceState('qb-core') == 'started' then
+        Config.Core = 'qb-core'
+    elseif GetResourceState('es_extended') == 'started' then
+        Config.Core = 'esx'
+    elseif GetResourceState('ox_core') == 'started' then
+        Config.Core = 'ox_core'
+    else
+        error('[dv-elevator] No supported core framework detected (qb-core, esx, ox_core). Please set Config.Core manually.')
+    end
+end
+
+if Config.Core == 'qb-core' then
+    Config.CoreObject = exports['qb-core']:GetCoreObject()
+elseif Config.Core == 'esx' then
+    Config.CoreObject = exports['es_extended']:getSharedObject()
+elseif Config.Core == 'ox_core' then
+    Config.CoreObject = exports.ox_core:object()
+end
+
 createSphereZoneTarget = function(coords, radius, options, distance, name)
     if Config.target == 'qb-target' then    
         return exports['qb-target']:AddBoxZone(name, coords, radius, radius, 
@@ -55,7 +86,7 @@ RegisterNuiCallback('useElevator', function(data, cb)
     if Config.Core == "qb-core" then
         Config.CoreObject.Functions.GetPlayerData(function(playerData)
             local reqjob = Config.elevators[data.currentElevator].job
-            if reqjob and playerData.job.name ~= reqjob and (Config.UseOffDutyJobs and playerJob ~= Config.OffDutyJobSuffix .. reqjob or true) then
+            if reqjob and playerData.job.name ~= reqjob and (Config.UseOffDutyJobs == true and playerData.job.name ~= Config.OffDutyJobSuffix .. reqjob or true) then
                 Config.CL.Notify("Du hast nicht die ausreichenden Berechtigungen für diesen Aufzug.", "error")
                 return
             end
@@ -107,6 +138,10 @@ RegisterNuiCallback('useElevator', function(data, cb)
 end)
 
 RegisterNetEvent('dv_elevator:client:useElevator', function (data)
+    if not currentfloor then
+        print("No current floor, not using elevator")
+        return
+    end
     local coords = Config.elevators[data.currentElevator].levels[currentfloor].center
     local newCoords = Config.elevators[data.currentElevator].levels[data.id].center
     local playerCoords = GetEntityCoords(PlayerPedId())
